@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"log"
+	"testing/quick"
 
 	"golang.org/x/tools/go/analysis/passes/defers"
 )
@@ -58,6 +59,17 @@ func uapdateTask(db *sql.DB, id int, title, description, status string) error {
 
 	return nil
 
+}
+
+func deleteTask(db *sql.DB, id int) error {
+	query :=`SELECT FROM tasks WHERE id = ?`
+	_,err := db.Exec(query)
+	if err != nil{
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
 }
 
 
