@@ -48,3 +48,16 @@ func getTask(db *sql.DB) ([]Task, error){
 	return tasks, nil
 }
 
+func uapdateTask(db *sql.DB, id int, title, description, status string) error {
+	query := `UPDATE tasks SET title = ?, description = ?, status = ?, update_at = CURENT_TIMESTAMP WHERE ID = ?`
+	_, err := db.Exec(query, title, description, status, id)
+	if err!=nil{
+		log.Fatal(err)
+		return err	
+	}
+
+	return nil
+
+}
+
+
