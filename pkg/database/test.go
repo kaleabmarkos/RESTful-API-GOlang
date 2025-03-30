@@ -3,9 +3,7 @@ package database
 import (
 	"database/sql"
 	"log"
-	"testing/quick"
-
-	"golang.org/x/tools/go/analysis/passes/defers"
+	"restapi-go/pkg/models"
 )
 
 func createTask(db *sql.DB, title, description, status string) int64{
@@ -25,7 +23,7 @@ func createTask(db *sql.DB, title, description, status string) int64{
 
 }
 
-func getTask(db *sql.DB) ([]Task, error){
+func getTask(db *sql.DB) ([]models.Task, error){
 	row, err := db.Query("SELECT id, title, description, status, created_at, updated_at FROM tasks")
 	if err != nil{
 		log.Fatal(err)
@@ -33,10 +31,10 @@ func getTask(db *sql.DB) ([]Task, error){
 
 	defer row.Close()
 
-	var tasks []Task
+	var tasks []models.Task
 
 	for row.Next(){
-		var task Task
+		var task models.Task
 
 		if err:=row.Scan(&task.ID, &task.Title, &task.Description, &task.Status, &task.CreatedAt, &task.UpdatedAt); err!=nil{
 			log.Fatal(err)
