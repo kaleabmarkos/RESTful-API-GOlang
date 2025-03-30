@@ -6,10 +6,10 @@ import (
 	"restapi-go/pkg/models"
 )
 
-func createTask(db *sql.DB, title, description, status string) int64{
-	query := `INSERT INTO task (title, description, status) VALUES (?,?,?)`
+func CreateTask(db *sql.DB, title, description, status string) int64{
+	query := `INSERT INTO tasks (title, description, status) VALUES (?,?,?)`
 
-	res, err := db.Exec(query)
+	res, err := db.Exec(query, title, description, status)
 	if err!=nil{
 		log.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func createTask(db *sql.DB, title, description, status string) int64{
 
 }
 
-func getTask(db *sql.DB) ([]models.Task, error){
+func GetTask(db *sql.DB) ([]models.Task, error){
 	row, err := db.Query("SELECT id, title, description, status, created_at, updated_at FROM tasks")
 	if err != nil{
 		log.Fatal(err)
@@ -47,7 +47,7 @@ func getTask(db *sql.DB) ([]models.Task, error){
 	return tasks, nil
 }
 
-func uapdateTask(db *sql.DB, id int, title, description, status string) error {
+func UpdateTask(db *sql.DB, id int, title, description, status string) error {
 	query := `UPDATE tasks SET title = ?, description = ?, status = ?, update_at = CURENT_TIMESTAMP WHERE ID = ?`
 	_, err := db.Exec(query, title, description, status, id)
 	if err!=nil{
@@ -59,7 +59,7 @@ func uapdateTask(db *sql.DB, id int, title, description, status string) error {
 
 }
 
-func deleteTask(db *sql.DB, id int) error {
+func DeleteTask(db *sql.DB, id int) error {
 	query :=`SELECT FROM tasks WHERE id = ?`
 	_,err := db.Exec(query)
 	if err != nil{
