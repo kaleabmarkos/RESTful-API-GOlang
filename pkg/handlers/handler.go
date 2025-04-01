@@ -9,7 +9,21 @@ import(
 )
 
 func CreateTaskHandler(db *sql.DB) http.HandlerFunc{
-	//handles creating a new task
+	//handles creating a new task and storing it the database
+	return func(w http.ResponseWriter, r *http.Request) {
+		var task models.Task
+		err := json.NewDecoder(r.Body).Decode(&task)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		taskId := database.CreateTask(db, task.Title, task.Description, task.Status)
+
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]interface{}{"id":taskId})
+	}
+
 }
 
 func GetAllTaskHandler(db *sql.DB) http.HandlerFunc{
