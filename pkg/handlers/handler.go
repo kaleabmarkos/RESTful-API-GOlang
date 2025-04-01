@@ -1,11 +1,14 @@
 package handlers
 
-import(
+import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"restapi-go/pkg/database"
 	"restapi-go/pkg/models"
-	"database/sql"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func CreateTaskHandler(db *sql.DB) http.HandlerFunc{
@@ -44,6 +47,23 @@ func GetAllTaskHandler(db *sql.DB) http.HandlerFunc{
 
 func GetTaskHandler(db *sql.DB) http.HandlerFunc{
 	//handles getting a task
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := mux.Vars(r)["id"]
+		id, err:=strconv.Atoi(idStr)
+		if err!=nil{
+			http.Error(w, "Invalid Id", http.StatusBadRequest)
+			return
+		}
+
+		tasks, err:= database.GetTask(db)
+		if err!=nil{
+			http.Error(w,"Task not found", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(tasks[id])
+	}
 }
 
 func UpdateTaskHandler(db *sql.DB) http.HandlerFunc{
