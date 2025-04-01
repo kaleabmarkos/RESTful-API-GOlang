@@ -68,6 +68,29 @@ func GetTaskHandler(db *sql.DB) http.HandlerFunc{
 
 func UpdateTaskHandler(db *sql.DB) http.HandlerFunc{
 	//handles updating a task
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr :=mux.Vars(r)["id"]
+		idint, err := strconv.Atoi(idStr)
+		if err != nil{
+			http.Error(w,"Invalid Id", http.StatusBadRequest)
+		}
+
+		var task models.Task
+		
+		err = json.NewDecoder(r.Body).Decode(&task)
+		if err!=nil{
+			http.Error(w,err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = database.UpdateTask(db, idint, task.Title, task.Description, task.Status)
+		if err !=nil{
+			http.Error(w, "Error updating the task", http.StatusInternalServerError)
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"status":"updated"})
+
+	}
 }
 
 func DeleteTaskHandler(db *sql.DB) http.HandlerFunc{
