@@ -95,5 +95,22 @@ func UpdateTaskHandler(db *sql.DB) http.HandlerFunc{
 
 func DeleteTaskHandler(db *sql.DB) http.HandlerFunc{
 	//handles deleting a task
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := mux.Vars(r)["id"]
+		idint, err := strconv.Atoi(idStr)
+		if err!=nil{
+			http.Error(w,"Invalid ID", http.StatusBadRequest)
+			return
+		}
+
+		err = database.DeleteTask(db, idint)
+		if err!=nil{
+			http.Error(w,err.Error(), http.StatusInternalServerError)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"status":"deleted"})
+
+	}
 }
 
