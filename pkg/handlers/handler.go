@@ -28,7 +28,19 @@ func CreateTaskHandler(db *sql.DB) http.HandlerFunc{
 
 func GetAllTaskHandler(db *sql.DB) http.HandlerFunc{
 	//handles getting all task
+	return func(w http.ResponseWriter, r *http.Request) {
+		tasks, err := database.GetTask(db)
+		if err!=nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(tasks)
+
+	}
 }
+
 
 func GetTaskHandler(db *sql.DB) http.HandlerFunc{
 	//handles getting a task
