@@ -24,7 +24,7 @@ func main(){
 	r.HandleFunc("/tasks/{id}", handlers.UpdateTaskHandler(db)).Methods("PUT")
 	r.HandleFunc("/tasks/{id}", handlers.DeleteTaskHandler(db)).Methods("DELETE")
 
-	taskId := database.CreateTask(db, "Test Task", "This is a test task.", "pending")
+	taskId := database.DeleteTask(db, 4)
 	fmt.Printf("New task created with ID: %d\n", taskId)
 
 

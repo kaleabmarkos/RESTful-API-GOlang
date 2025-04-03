@@ -60,8 +60,8 @@ func UpdateTask(db *sql.DB, id int, title, description, status string) error {
 }
 
 func DeleteTask(db *sql.DB, id int) error {
-	query :=`SELECT FROM tasks WHERE id = ?`
-	_,err := db.Exec(query)
+	query :=`DELETE FROM tasks WHERE id = ?`
+	_,err := db.Exec(query, id)
 	if err != nil{
 		log.Fatal(err)
 		return err

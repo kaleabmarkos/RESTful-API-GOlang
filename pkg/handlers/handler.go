@@ -7,7 +7,7 @@ import (
 	"restapi-go/pkg/database"
 	"restapi-go/pkg/models"
 	"strconv"
-
+	"strings"
 	"github.com/gorilla/mux"
 )
 
@@ -19,6 +19,13 @@ func CreateTaskHandler(db *sql.DB) http.HandlerFunc{
 		if err != nil{
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
+		}
+		if strings.TrimSpace(task.Title)=="" || strings.TrimSpace(task.Description)==""{
+			http.Error(w, "Task and Description are required", http.StatusBadRequest)
+		}
+		validStatus := map[string]bool{"pending":true, "completed":true}
+		if !validStatus[task.Status]{
+			http.Error(w, "Invalid Status", http.StatusBadRequest)
 		}
 
 		taskId := database.CreateTask(db, task.Title, task.Description, task.Status)
