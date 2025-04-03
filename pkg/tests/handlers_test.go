@@ -28,12 +28,12 @@ func testCreateTask(t *testing.T){
 
 	data, err := json.Marshal(newTask)
 	if err!=nil{
-		t.Fatalf("ERROR marshaling the task ",err)
+		t.Fatalf("ERROR marshaling the task: %v",err)
 	}
 
 	req, err := http.NewRequest("POST", "/tasks", bytes.NewBuffer(data))
 	if err!=nil{
-		t.Fatalf("ERROR sending request ",err)
+		t.Fatalf("ERROR sending request: %v ",err)
 	}
 
 	rr := httptest.NewRecorder()
@@ -44,7 +44,7 @@ func testCreateTask(t *testing.T){
 	var response map[string]interface{}
 	err = json.NewDecoder(rr.Body).Decode(&response)
 	if err!=nil{
-		t.Fatalf("ERROR decoding response ",err)
+		t.Fatalf("ERROR decoding response: %v ",err)
 	}
 
 	assert.NotNil(t, response["id"])
